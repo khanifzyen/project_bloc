@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'bloc/counter_bloc.dart';
 import 'cubit/counter_cubit.dart';
 import 'widgets/inc_dec_button.dart';
 
@@ -18,20 +19,21 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: BlocProvider(
-        create: (context) => CounterCubit(),
-        child: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (_) => CounterBloc()),
+          BlocProvider(create: (_) => CounterCubit()),
+        ],
+        child: const MyHomePage(title: 'Flutter Demo Home Page'),
       ),
     );
   }
 }
 
 class MyHomePage extends StatelessWidget {
-  MyHomePage({super.key, required this.title});
+  const MyHomePage({super.key, required this.title});
 
   final String title;
-
-  final CounterCubit counterCubit = CounterCubit();
 
   @override
   Widget build(BuildContext context) {
@@ -47,8 +49,7 @@ class MyHomePage extends StatelessWidget {
             const Text(
               'You have pushed the button this many times:',
             ),
-            BlocBuilder<CounterCubit, int>(
-              bloc: counterCubit,
+            BlocBuilder<CounterBloc, int>(
               builder: (context, state) {
                 return Text(
                   '$state',
@@ -59,7 +60,7 @@ class MyHomePage extends StatelessWidget {
           ],
         ),
       ),
-      floatingActionButton: IncDecButton(),
+      floatingActionButton: const IncDecButton(),
     );
   }
 }
